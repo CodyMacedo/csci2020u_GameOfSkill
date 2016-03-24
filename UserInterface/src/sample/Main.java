@@ -61,7 +61,45 @@ public class Main extends Application {
 
 
         Menu helpMenu = new Menu("Help");
-        helpMenu.getItems().add(new MenuItem("About...", imageFile("images/about.png")));
+
+        MenuItem aboutMenuItem = new MenuItem("About...", imageFile("images/about.png"));
+        helpMenu.getItems().add(aboutMenuItem);
+        aboutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String fileName = "About.txt";
+                String line = null;
+
+                try {
+
+                    FileReader fileReader =
+                            new FileReader(fileName);
+
+
+                    BufferedReader bufferedReader =
+                            new BufferedReader(fileReader);
+
+                    while((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                    }
+
+                    // Always close files.
+                    bufferedReader.close();
+                }
+                catch(FileNotFoundException ex) {
+                    System.out.println(
+                            "Unable to open file '" +
+                                    fileName + "'");
+                }
+                catch(IOException ex) {
+                    System.out.println(
+                            "Error reading file '"
+                                    + fileName + "'");
+                    // Or we could just do this:
+                    // ex.printStackTrace();
+                }
+            }
+        });
         helpMenu.getItems().add(new SeparatorMenuItem());
         MenuItem helpMenuItem = new MenuItem("Help...",imageFile("images/help.png"));
         helpMenu.getItems().add(helpMenuItem);
@@ -198,6 +236,7 @@ public class Main extends Application {
         //root.getChildren().add(editArea);
 
         primaryStage.setScene(new Scene(root,800,600,Color.BLUE));
+        primaryStage.setResizable(false);
         primaryStage.show();
         //primaryStage.setScene(show);
         //primaryStage.show();
@@ -253,7 +292,7 @@ public class Main extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(120), new EventHandler<ActionEvent>() {
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(180), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
                 gc.setFill(Color.BLACK);
@@ -269,10 +308,7 @@ public class Main extends Application {
                 frameOffsetX += frameWidth;
                 if (frameOffsetX >= totalWidth) {
                     frameOffsetX = 0;
-                    frameOffsetY += frameHeight;
-                    if (frameOffsetY >= totalHeight) {
-                        frameOffsetY = 0;
-                    }
+
                 }
             }
         }));
