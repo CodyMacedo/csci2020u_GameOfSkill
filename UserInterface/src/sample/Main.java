@@ -1,3 +1,4 @@
+
 package sample;
 
 import javafx.animation.KeyFrame;
@@ -58,23 +59,56 @@ public class Main extends Application {
         exitMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
         exitMenuItem.setOnAction( e -> System.exit(0) );
 
-        Menu editMenu = new Menu("Edit");
-        editMenu.getItems().add(new MenuItem("Cut", imageFile("images/cut.png")));
-        editMenu.getItems().add(new MenuItem("Copy", imageFile("images/copy.png")));
-        editMenu.getItems().add(new MenuItem("Paste", imageFile("images/paste.png")));
 
         Menu helpMenu = new Menu("Help");
         helpMenu.getItems().add(new MenuItem("About...", imageFile("images/about.png")));
         helpMenu.getItems().add(new SeparatorMenuItem());
-        helpMenu.getItems().add(new MenuItem("Help...", imageFile("images/help.png")));
+        MenuItem helpMenuItem = new MenuItem("Help...",imageFile("images/help.png"));
+        helpMenu.getItems().add(helpMenuItem);
+        helpMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String fileName = "HelpInstructions.txt";
+                String line = null;
+
+                try {
+
+                    FileReader fileReader =
+                            new FileReader(fileName);
+
+
+                    BufferedReader bufferedReader =
+                            new BufferedReader(fileReader);
+
+                    while((line = bufferedReader.readLine()) != null) {
+                        System.out.println(line);
+                    }
+
+                    // Always close files.
+                    bufferedReader.close();
+                }
+                catch(FileNotFoundException ex) {
+                    System.out.println(
+                            "Unable to open file '" +
+                                    fileName + "'");
+                }
+                catch(IOException ex) {
+                    System.out.println(
+                            "Error reading file '"
+                                    + fileName + "'");
+                    // Or we could just do this:
+                    // ex.printStackTrace();
+                }
+            }
+
+        });
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(fileMenu);
-        menuBar.getMenus().add(editMenu);
         menuBar.getMenus().add(helpMenu);
 
         GridPane editArea = new GridPane();
-        editArea.setPadding(new Insets(240, 240, 240, 240));
+        editArea.setPadding(new Insets(140, 140, 140, 140));
         editArea.setVgap(10);
         editArea.setHgap(10);
         Button addButton = new Button("Easy");
@@ -142,14 +176,15 @@ public class Main extends Application {
             }
         });
 
-        editArea.add(addButton, 1, 10);
-        editArea.add(newButton, 9,10);
-        editArea.add(hardButton,17,10);
-        editArea.add(Instructions,9, 14);
+        editArea.add(addButton, 0, 5);
+        editArea.add(newButton, 18,5);
+        editArea.add(hardButton,37,5);
+        editArea.add(Instructions,18, 14);
         layout = new BorderPane();
         layout.setBottom(editArea);
         layout.setTop(menuBar);
         layout.setCenter(canvas);
+
 
         StackPane root = new StackPane();
         //Scene scene = new Scene(root, 800, 600, Color.BLACK);
@@ -162,7 +197,7 @@ public class Main extends Application {
         root.getChildren().addAll(canvas,layout);
         //root.getChildren().add(editArea);
 
-        primaryStage.setScene(new Scene(root,800,600));
+        primaryStage.setScene(new Scene(root,800,600,Color.BLUE));
         primaryStage.show();
         //primaryStage.setScene(show);
         //primaryStage.show();
@@ -175,6 +210,8 @@ public class Main extends Application {
         System.out.println("width: " + canvas.getWidth());
         System.out.println("height: " + canvas.getHeight());
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.setFill(Color.BLACK);
+        gc.strokeRect(305,50,200,75);
 
         gc.setStroke(Color.BLUE);
         gc.strokeOval(305, 50, 200, 75);
