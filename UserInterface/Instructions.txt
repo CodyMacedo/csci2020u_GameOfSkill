@@ -1,6 +1,6 @@
 								Instructions For PokeMatch 
 
 This is a game that tests the users memory power. Cards will have to be matched based on appearence and it will be timed. If the user correctly matches 2 cards,
- both cards will show. On the other hand, if the user doesn't match the pair of cards, only one card will show. The scores will be sent to a leaderboard
+both cards will show. On the other hand, if the user doesn't match the pair of cards, only one card will show. The scores will be sent to a leaderboard
 and the person with the fastest time will be on top of the leaderboard. There are three difficulties: easy, medium, and hard. Easy is matching 5 pairs, medium is matching 10 pairs, and
 hard is matching 20 pairs. 
