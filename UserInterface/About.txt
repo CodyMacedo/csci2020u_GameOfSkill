@@ -1,0 +1,6 @@
+											About PokeMatch
+
+The intention behind PokeMatch was to create a game that tests and strengthens memory. The proud developers of PokeMatch are Cody Macedo, Alex Ly, and Gayanath Sasitharanathan.
+PokeMatch is a game for all age groups, it was inspired by Alex Ly who decided on the concept of the game, Gayanath Sasitharanathan created the User interface while Cody Macedo used 
+sockets and servers to create a functional Leaderboard. 
+
