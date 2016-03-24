@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
@@ -36,6 +37,8 @@ public class Main extends Application {
     private Stage window;
     private Canvas canvas;
     private BorderPane layout;
+    private int difficulty;
+    private Play play;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -77,7 +80,9 @@ public class Main extends Application {
         Button addButton = new Button("Easy");
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-
+                difficulty=1;
+                play=new Play(difficulty);
+                play.play(difficulty, primaryStage);
             }
         });
 
@@ -85,14 +90,18 @@ public class Main extends Application {
         Button newButton = new Button("Medium");
         newButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                System.out.println("Hi");
+                difficulty=2;
+                play=new Play(difficulty);
+                play.play(difficulty, primaryStage);
             }
         });
 
         Button hardButton = new Button("Hard");
         hardButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-
+                difficulty=3;
+                play=new Play(difficulty);
+                play.play(difficulty, primaryStage);
             }
         });
 
@@ -142,37 +151,30 @@ public class Main extends Application {
         layout.setTop(menuBar);
         layout.setCenter(canvas);
 
-
-        Group root = new Group();
-        Scene scene = new Scene(root, 800, 600, Color.BLACK);
-        Scene show = new Scene(layout,800,600);
+        StackPane root = new StackPane();
+        //Scene scene = new Scene(root, 800, 600, Color.BLACK);
+        //Scene show = new Scene(layout,800,600);
 
         canvas = new Canvas();
         canvas.widthProperty().bind(primaryStage.widthProperty());
         canvas.heightProperty().bind(primaryStage.heightProperty());
 
+        root.getChildren().addAll(canvas,layout);
+        //root.getChildren().add(editArea);
 
-
-        root.getChildren().add(canvas);
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root,800,600));
         primaryStage.show();
-        primaryStage.setScene(show);
-        primaryStage.show();
-
-
+        //primaryStage.setScene(show);
+        //primaryStage.show();
         draw(root);
         drawAnimation(root);
-
-
     }
 
-    private void draw(Group group) {
+    private void draw(StackPane group) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         System.out.println("width: " + canvas.getWidth());
         System.out.println("height: " + canvas.getHeight());
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
 
         gc.setStroke(Color.BLUE);
         gc.strokeOval(305, 50, 200, 75);
@@ -183,26 +185,19 @@ public class Main extends Application {
         gc.setStroke(Color.RED);
         gc.strokeOval(565, 200, 155, 75);
 
-
         Font font = new Font("Arial", 24);
         gc.setFont(font);
         gc.setFill(Color.RED);
         gc.setStroke(Color.PURPLE);
         gc.strokeText("Poke", 335, 90);
         gc.fillText("Match", 385, 90);
-        gc.setFill(Color.YELLOW);
+        gc.setFill(Color.ORANGE);
         gc.fillText("Medium", 360, 245);
         gc.setFill(Color.GREEN);
         gc.fillText("Easy", 145, 245);
         gc.setFill(Color.RED);
         gc.fillText("Hard", 615, 245);
         gc.setFill(Color.BEIGE);
-
-
-
-
-
-
     }
 
     private Timeline timeline = null;
@@ -216,7 +211,7 @@ public class Main extends Application {
     private final int numFrames = 6;
     private int frameNum = 0;
 
-    private void drawAnimation(Group group) {
+    private void drawAnimation(StackPane group) {
         Image sprites = new Image("pikachu.png");
         GraphicsContext gc = canvas.getGraphicsContext2D();
         timeline = new Timeline();
@@ -247,18 +242,11 @@ public class Main extends Application {
         timeline.playFromStart();
     }
 
-
-
-
-
     private ImageView imageFile(String filename) {
         return new ImageView(new Image("file:"+filename));
     }
-
-
 
     public static void main(String[] args) {
         launch(args);
     }
 }
-
