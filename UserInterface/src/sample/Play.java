@@ -16,10 +16,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.Random;
-import java.util.Scanner;
 
 public class Play {
-    private Canvas canvas;
     private BorderPane layout;
     private int[][] grid;//stores random numbers
     private int guess1, guess2;
@@ -38,8 +36,6 @@ public class Play {
         layout=new BorderPane();
         Scene scene;
         primaryStage.setTitle("Pokemon matching game");
-
-        Scanner scan=new Scanner(System.in);
 
         int[] nums;
         Button[][] buttons;
@@ -107,7 +103,6 @@ public class Play {
                     public void handle(ActionEvent event) {
 
                         if (!pressed[x1][y1]) {
-                            //Group group=(Group) buttons[x1][y1].getParent();
 
                             if (grid[x1][y1] < 100) {
                                 if (grid[x1][y1] < 10) {
@@ -130,8 +125,6 @@ public class Play {
                                 if (x1 == pressedButtons[0] && y1 == pressedButtons[1]) {
                                     System.out.println("Already pressed");
                                 } else {
-                                    //System.out.println(grid[x1][y1]);
-
                                     if (grid[x1][y1] < 100) {
                                         if (grid[x1][y1] < 10) {
                                             buttons[x1][y1].setGraphic(new ImageView(new Image("/csci2020project/00" + grid[x1][y1] + ".png")));
@@ -140,7 +133,6 @@ public class Play {
                                         }
                                     } else {
                                         buttons[x1][y1].setGraphic(new ImageView(new Image("/csci2020project/" + grid[x1][y1] + ".png")));
-                                        //System.out.println(grid[x1][y1]);
                                     }
                                     area.getChildren().remove(buttons[x1][y1]);
                                     area.getChildren().add(buttons[x1][y1]);
@@ -203,7 +195,7 @@ public class Play {
                                     } else {//no match
 
                                         try {
-                                            Thread.sleep(500);                 //1000 milliseconds is one second.
+                                            Thread.sleep(500);                 //500 milliseconds is half of a second.
                                         } catch(InterruptedException ex) {
                                             Thread.currentThread().interrupt();
                                         }
@@ -238,7 +230,6 @@ public class Play {
         }
         layout.setCenter(area);
 
-        //scene=new Scene(parent);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
