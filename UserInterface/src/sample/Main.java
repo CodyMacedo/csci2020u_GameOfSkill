@@ -45,7 +45,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("PokeMatch");
         Menu fileMenu = new Menu("File");
-        MenuItem newMenuItem = new MenuItem("New", imageFile("images/new.png"));
+        MenuItem newMenuItem = new MenuItem("New Game", imageFile("images/new.png"));
         newMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
         fileMenu.getItems().add(newMenuItem);
         fileMenu.getItems().add(new SeparatorMenuItem());
