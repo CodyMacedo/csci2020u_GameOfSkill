@@ -6,10 +6,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -21,7 +18,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,7 +30,6 @@ import java.io.IOException;
 public class Main extends Application {
 
     @FXML
-    private Stage window;
     private Canvas canvas;
     private BorderPane layout;
     private int difficulty;
@@ -57,7 +52,6 @@ public class Main extends Application {
         fileMenu.getItems().add(exitMenuItem);
         exitMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
         exitMenuItem.setOnAction( e -> System.exit(0) );
-
 
         Menu helpMenu = new Menu("Help");
 

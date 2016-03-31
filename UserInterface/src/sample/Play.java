@@ -2,7 +2,6 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -39,7 +38,7 @@ public class Play {
         Scene scene;
         primaryStage.setTitle("Pokemon matching game");
         Menu fileMenu = new Menu("File");
-        MenuItem newMenuItem = new MenuItem("New Game", imageFile("images/new.png"));
+        MenuItem newMenuItem = new MenuItem("Back to main menu", imageFile("images/new.png"));
         fileMenu.getItems().add(newMenuItem);
         newMenuItem.setOnAction(new EventHandler<ActionEvent>() {
 
