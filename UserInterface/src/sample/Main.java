@@ -1,4 +1,3 @@
-
 package sample;
 
 import javafx.animation.KeyFrame;
@@ -44,7 +43,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("PokeMatch");
-        Menu fileMenu = new Menu("File");
+        Menu fileMenu = new Menu("Menu");
         MenuItem newMenuItem = new MenuItem("New Game", imageFile("images/new.png"));
         newMenuItem.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
         fileMenu.getItems().add(newMenuItem);

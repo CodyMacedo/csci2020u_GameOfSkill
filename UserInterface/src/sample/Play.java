@@ -53,6 +53,15 @@ public class Play {
                 }
             }
         });
+        fileMenu.getItems().add(new SeparatorMenuItem());
+        MenuItem playAgain=new MenuItem("Play again");
+        fileMenu.getItems().add(playAgain);
+        playAgain.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                play(difficulty,primaryStage);
+            }
+        });
 
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem exitMenuItem = new MenuItem("Exit", imageFile("images/exit.png"));
@@ -208,7 +217,8 @@ public class Play {
                                             Font font=new Font("Arial",50);
                                             gc.setFont(font);
                                             gc.fillText("Congratulations!",65,75);
-                                            layout.setTop(canvas);
+                                            layout.setTop(menuBar);
+                                            layout.setCenter(canvas);
 
                                             Scene win=new Scene(layout,500,600);
                                             primaryStage.setScene(win);
