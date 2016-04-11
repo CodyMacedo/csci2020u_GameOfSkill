@@ -128,7 +128,7 @@ public class Main extends Application {
                             "Error reading file '"
                                     + fileName + "'");
                     // Or we could just do this:
-                    // ex.printStackTrace();
+                    // ex.printStackTrace() ;
                 }
             }
 
