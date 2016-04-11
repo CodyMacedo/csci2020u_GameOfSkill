@@ -1,5 +1,14 @@
 package sample;
 
+/**********************/
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.awt.*;
+/**********************/
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -7,11 +16,16 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -26,6 +40,18 @@ public class Play {
     private Main start;
     private boolean[][] pressed;//if the cards are already flipped over
     private boolean end=false;//if all cards are flipped over
+
+
+	// Variables
+	/**********************/
+	private long startTime = 0;
+	private long endTime = 0;
+	private Socket socket = null;
+	private PrintWriter networkOut = null;
+	private BufferedReader networkIn = null;
+	public  static String SERVER_ADDRESS = "localhost";
+	public  static int    SERVER_PORT = 8080;
+	/**********************/
 
     private int difficulty;
     public Play(int difficulty){
@@ -73,6 +99,11 @@ public class Play {
 
         layout.setTop(menuBar);
 
+		// Make sure to run the server before the client
+		/**********************/
+		makeConnection();	
+		/**********************/
+	
         int[] nums;
         Button[][] buttons;
         GridPane area=new GridPane();
@@ -132,6 +163,12 @@ public class Play {
                 grid[x][y]=nums[i];
                 buttons[x][y]=new Button();
                 buttons[x][y].setGraphic(new ImageView(image));
+                
+                
+                /**********************/
+                startTime = System.currentTimeMillis();
+                /**********************/
+                
                 final int x1=x;
                 final int y1=y;
                 buttons[x][y].setOnAction(new EventHandler<ActionEvent>() {
@@ -192,12 +229,13 @@ public class Play {
                                             }
                                         }
                                         if(end){
+                                        	/**********************/
+                                       	 	endTime = System.currentTimeMillis();
+                                        	/**********************/
+                                        
                                             area.getChildren().remove(buttons[x1][y1]);
 
                                             area.getChildren().add(buttons[x1][y1]);
-
-                                            Group root=new Group();
-
 
 
                                             layout=new BorderPane();
@@ -205,8 +243,45 @@ public class Play {
                                             image.setImage(new Image("/csci2020project/haunter.gif"));
                                             image.setFitHeight(500);
                                             image.setFitWidth(500);
-                                            layout.setBottom(image);
+                                            //layout.setBottom(image);		<--- I removed this. I added the image to a VBox so I could set the VBox to the bottom of layout
+                                           	//									 which contains the image and the leaderboard
+											
+											/**********************/
+											
+											ObservableList<String> leaderList = FXCollections.observableArrayList();
+											ListView<String> list = new ListView<>();
+											list.setPrefWidth(500);
+											list.setPrefHeight(200);
+											
+											long elapsed = (endTime - startTime) / 1000;
+                                            networkOut.println("NEWSCORE " + difficulty + " " +  elapsed);
+											networkOut.println("LEADERBOARD " + difficulty);
+											
+											
+											leaderList.add("Leaderboard");
+											
+											String line;
+											int count = 1;
+                                            try{
+                                                while ((line = networkIn.readLine()) != null) {
+                                                    String temp = count + ".   " + line;
+                                                    leaderList.add(temp);
+                                                    count++;
+                                                }
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
 
+											list.setItems(leaderList);
+											networkOut.println("QUIT");
+											GridPane displayArea = new GridPane();
+											//displayArea.getChildren().addAll(image, leaderList);
+                                            //displayArea.getChildren().addAll(list);
+                                            displayArea.setVgap(10);
+                                            displayArea.add(image,0,0);
+                                            displayArea.add(list,0,1);
+                                            layout.setBottom(displayArea);
+											/**********************/
 
                                             Canvas canvas=new Canvas();
                                             canvas.setHeight(100);
@@ -218,18 +293,13 @@ public class Play {
                                             gc.fillText("Congratulations!",65,75);
                                             layout.setTop(menuBar);
                                             layout.setCenter(canvas);
+                                            //layout.setBottom(list);
 
-                                            Scene win=new Scene(layout,500,600);
+											/**************************///  turned the 600 into 800 to accommodate the leaderboard
+                                            Scene win=new Scene(layout,500,800);                                         
                                             primaryStage.setScene(win);
                                             primaryStage.show();
-                                            /*
-                                            /////////////////////////////////
-                                            /////////////////////////////////
-                                            Cody, add your code here
-                                            /////////////////////////////////
-                                            /////////////////////////////////
-                                            */
-
+                                            
                                         }
 
 
@@ -279,6 +349,28 @@ public class Play {
         return new ImageView(new Image("file:"+filename));
     }
 
-
+	
+	/**********************/
+	private void makeConnection() {
+    	try {
+			socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+		} catch (UnknownHostException e) {
+			System.err.println("Unknown host: "+SERVER_ADDRESS);
+		} catch (IOException e) {
+			System.err.println("IOEXception while connecting to server: "+SERVER_ADDRESS);
+		}
+		if (socket == null) {
+			System.err.println("socket is null");
+		}
+        
+        try {
+        	OutputStream outputStream = socket.getOutputStream();
+			networkOut = new PrintWriter(outputStream, true);
+			networkIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e) {
+			System.err.println("IOEXception while opening a read/write connection");
+		}
+    }
+	/**********************/
 
 }

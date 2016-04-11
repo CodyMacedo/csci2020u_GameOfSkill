@@ -272,7 +272,7 @@ public class Main extends Application {
     private Timeline timeline = null;
 
     private int frameOffsetX = 0;
-    private int frameOffsetY = 0;
+    private int frameOffsetY = 100;
     private final int frameWidth = 208;
     private final int frameHeight = 128;
     private final int totalWidth = 768;
@@ -291,11 +291,15 @@ public class Main extends Application {
                 gc.setFill(Color.BLACK);
                 gc.fillRect(685, 500, frameWidth, frameHeight);
 
+                //frameOffsetY=100;
+
+
                 // draw the current frame
                 gc.drawImage(sprites, frameOffsetX, frameOffsetY, frameWidth, frameHeight, 685, 500, frameWidth, frameHeight);
 
                 // proceed to the next frame of the animation
                 frameNum = (frameNum + 1) % numFrames;
+
 
                 // increment x offset and y offset
                 frameOffsetX += frameWidth;
