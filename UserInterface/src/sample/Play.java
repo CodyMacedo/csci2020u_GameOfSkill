@@ -1,10 +1,9 @@
 package sample;
-
 /**********************/
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.awt.*;
+//import java.awt.*;
 /**********************/
 
 import javafx.collections.FXCollections;
@@ -26,6 +25,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -51,6 +51,8 @@ public class Play {
 	private BufferedReader networkIn = null;
 	public  static String SERVER_ADDRESS = "localhost";
 	public  static int    SERVER_PORT = 8080;
+	
+	private String name = "";
 	/**********************/
 
     private int difficulty;
@@ -238,67 +240,43 @@ public class Play {
                                             area.getChildren().add(buttons[x1][y1]);
 
 
-                                            layout=new BorderPane();
-                                            ImageView image=new ImageView();
-                                            image.setImage(new Image("/csci2020project/haunter.gif"));
-                                            image.setFitHeight(500);
-                                            image.setFitWidth(500);
-                                            //layout.setBottom(image);		<--- I removed this. I added the image to a VBox so I could set the VBox to the bottom of layout
-                                           	//									 which contains the image and the leaderboard
-											
 											/**********************/
-											
-											ObservableList<String> leaderList = FXCollections.observableArrayList();
-											ListView<String> list = new ListView<>();
-											list.setPrefWidth(500);
-											list.setPrefHeight(200);
-											
-											long elapsed = (endTime - startTime) / 1000;
-                                            networkOut.println("NEWSCORE " + difficulty + " " +  elapsed);
-											networkOut.println("LEADERBOARD " + difficulty);
-											
-											
-											leaderList.add("Leaderboard");
-											
-											String line;
-											int count = 1;
-                                            try{
-                                                while ((line = networkIn.readLine()) != null) {
-                                                    String temp = count + ".   " + line + " seconds";
-                                                    leaderList.add(temp);
-                                                    count++;
-                                                }
-                                            }catch (Exception e){
-                                                e.printStackTrace();
-                                            }
+											layout=new BorderPane();
+											GridPane displayChoice = new GridPane();
+											displayChoice.setPadding(new Insets(10, 10, 10, 10));
+											displayChoice.setVgap(10);
+											displayChoice.setHgap(10);
 
-											list.setItems(leaderList);
-											networkOut.println("QUIT");
-											GridPane displayArea = new GridPane();
-											//displayArea.getChildren().addAll(image, leaderList);
-                                            //displayArea.getChildren().addAll(list);
-                                            displayArea.setVgap(10);
-                                            displayArea.add(image,0,0);
-                                            displayArea.add(list,0,1);
-                                            layout.setBottom(displayArea);
+											
+											Stage popup = new Stage(); 
+											
+											Label choiceLabel = new Label("Enter Leaderboard Name:");
+											displayChoice.add(choiceLabel, 0, 0);
+											Label infoLabel = new Label("  (Only 3 Characters)");
+					   						displayChoice.add(infoLabel, 0, 1);
+											
+											TextField choiceField = new TextField();
+											choiceField.setPromptText("AAA");
+											displayChoice.add(choiceField, 1, 0);
+											
+											Button addButton = new Button("Confirm");
+											addButton.setOnAction(new EventHandler<ActionEvent>() {
+												@Override public void handle(ActionEvent e) {
+													if (choiceField.getText().length() >= 3) {
+														name = (choiceField.getText()).toUpperCase().substring(0,3);
+														popup.close();
+														winScene(menuBar,primaryStage);
+													}
+												}
+											});
+											displayChoice.add(addButton, 2, 0);
+											
+											layout.setCenter(displayChoice);
+											Scene choice=new Scene(layout,450,80);                                   
+											     
+                                            popup.setScene(choice);
+                                            popup.show();										
 											/**********************/
-
-                                            Canvas canvas=new Canvas();
-                                            canvas.setHeight(100);
-                                            canvas.setWidth(500);
-                                            GraphicsContext gc=canvas.getGraphicsContext2D();
-                                            gc.setFill(Color.BLUE);
-                                            Font font=new Font("Arial",50);
-                                            gc.setFont(font);
-                                            gc.fillText("Congratulations!",65,75);
-                                            layout.setTop(menuBar);
-                                            layout.setCenter(canvas);
-                                            //layout.setBottom(list);
-
-											/**************************///  turned the 600 into 800 to accommodate the leaderboard
-                                            Scene win=new Scene(layout,500,800);                                         
-                                            primaryStage.setScene(win);
-                                            primaryStage.show();
                                             
                                         }
 
@@ -372,5 +350,67 @@ public class Play {
 		}
     }
 	/**********************/
+
+
+	private void winScene(MenuBar menuBar, Stage primaryStage) {
+		
+        layout=new BorderPane();
+        ImageView image=new ImageView();
+        image.setImage(new Image("/csci2020project/haunter.gif"));
+        image.setFitHeight(500);
+        image.setFitWidth(500);
+        //layout.setBottom(image);		<--- I removed this. I added the image to a GridPane so I could set the GridPane to the bottom of layout
+        //									 which contains the image and the leaderboard
+											
+		/**********************/
+											
+		ObservableList<String> leaderList = FXCollections.observableArrayList();
+		ListView<String> list = new ListView<>();
+		list.setPrefWidth(500);
+		list.setPrefHeight(150);
+											
+		long elapsed = (endTime - startTime) / 1000;
+        networkOut.println("NEWSCORE " + difficulty + elapsed + " " + name);
+		networkOut.println("LEADERBOARD " + difficulty);
+											
+											
+		leaderList.add("Leaderboard");
+		String line;
+		int count = 1;
+        try{
+        	while (!(line = networkIn.readLine()).equals("[END]")) {
+        		String temp = count + ".   " + line + " s";
+                leaderList.add(temp);
+                count++;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+		list.setItems(leaderList);
+		networkOut.println("QUIT");
+											
+		GridPane displayArea = new GridPane();
+        displayArea.setVgap(10);
+        displayArea.add(image,0,0);
+        displayArea.add(list,0,1);
+        layout.setBottom(displayArea);
+		/**********************/
+
+        Canvas canvas=new Canvas();
+        canvas.setHeight(100);
+        canvas.setWidth(500);
+        GraphicsContext gc=canvas.getGraphicsContext2D();
+        gc.setFill(Color.BLUE);
+        Font font=new Font("Arial",50);
+        gc.setFont(font);
+        gc.fillText("Congratulations!",65,75);
+        layout.setTop(menuBar);
+        layout.setCenter(canvas);
+
+        Scene win=new Scene(layout,500,800);                                         
+        primaryStage.setScene(win);
+        primaryStage.show();
+    }
 
 }

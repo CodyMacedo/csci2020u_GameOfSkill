@@ -15,7 +15,7 @@ public class ServerThreadHandler extends Thread {
 		this.socket = socket;
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));//
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("IOEXception while opening a read/write connection");
 		}
@@ -56,9 +56,9 @@ public class ServerThreadHandler extends Thread {
 	protected boolean processCommand(String command, String args) {
 		if (command.equalsIgnoreCase("LEADERBOARD")) {
 			File file= null;
-			if (args == "1") {	
-				file = new File("./ServerFiles/leaderEasy.txt");
-			} else if (args == "2") {
+				if (args.equals("1")) {
+					file = new File("./ServerFiles/leaderEasy.txt");
+			} else if (args.equals("2")) {
 				file = new File("./ServerFiles/leaderMedium.txt");
 			} else {
 				file = new File("./ServerFiles/leaderHard.txt");
@@ -67,8 +67,9 @@ public class ServerThreadHandler extends Thread {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				String score;
 				while ((score = br.readLine()) != null) {
-					out.println(score);
+					out.println(score.substring(score.indexOf(" ") + 1) + "   " + score.substring(0, score.indexOf(" ")));
 				}
+				out.println("[END]");
 				br.close();
 
 			}catch (Exception e){
@@ -78,25 +79,31 @@ public class ServerThreadHandler extends Thread {
 			return false;
 		} else if (command.equalsIgnoreCase("NEWSCORE")) {
 			File file= null;
-			if (args.substring(0,1) == "1") {	
+			if (args.substring(0,1).equals("1")) {	
 				file = new File("./ServerFiles/leaderEasy.txt");
-			} else if (args.substring(0,1) == "2") {
+			} else if (args.substring(0,1).equals("2")) {
 				file = new File("./ServerFiles/leaderMedium.txt");
 			} else {
 				file = new File("./ServerFiles/leaderHard.txt");
 			}
 			
-			ArrayList<Long> items = new ArrayList<Long>();
+			ArrayList<String> items = new ArrayList<String>();
 
 			try{
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				String score;
 				while ((score = br.readLine()) != null) {
-					items.add(Long.parseLong(score));
+					items.add(score);
 				}
-				items.add(Long.parseLong(args.substring(2)));
+				items.add(args.substring(1));
 
-				Collections.sort(items);
+				Collections.sort(items, new Comparator<String>() {
+					public int compare(String e1, String e2) {
+						Integer i1 = Integer.parseInt(e1.substring(0, e1.indexOf(" ")));
+						Integer i2 = Integer.parseInt(e2.substring(0, e2.indexOf(" ")));
+						return i1.compareTo(i2);
+					}
+				});
 
 				FileWriter writer = new FileWriter(file,false);
 				for (int i = 0; i < items.size(); i++) {
