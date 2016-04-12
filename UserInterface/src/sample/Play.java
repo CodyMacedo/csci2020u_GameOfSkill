@@ -5,7 +5,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.awt.*;
-/********************** /
+/**********************/
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -264,7 +264,7 @@ public class Play {
 											int count = 1;
                                             try{
                                                 while ((line = networkIn.readLine()) != null) {
-                                                    String temp = count + ".   " + line;
+                                                    String temp = count + ".   " + line + " seconds";
                                                     leaderList.add(temp);
                                                     count++;
                                                 }
